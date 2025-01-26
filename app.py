@@ -5,11 +5,15 @@ import tempfile
 import os
 import streamlit as st
 import asyncio
+from datetime import datetime
 
 # LangChain
 from langchain.tools import BaseTool
 from langchain_core.messages import AnyMessage, HumanMessage, AIMessage, SystemMessage
+from langchain_core.tools import tool
 from langchain_openai import AzureChatOpenAI
+from langchain_community.utilities.sql_database import SQLDatabase
+from langchain_community.agent_toolkits.sql.toolkit import SQLDatabaseToolkit
 
 # LangGraph
 from langgraph.checkpoint.memory import MemorySaver
@@ -75,11 +79,24 @@ def initialize_session():
             api_key = st.secrets["API_SERVICE_KEY"],
             temperature = 0.0,
             #model_kwargs={"stop": ["\nObservation", "Observation"]} # this should further prevent halucinations
-        )        
-        tools = [
-            HumanInputStreamlit(),
-            plotly_tool,
-        ]
+        )
+        db = SQLDatabase.from_uri(st.secrets["NORTHWIND_DB"])
+        
+        # Tool to retrieve the current date
+        @tool
+        def get_datetime_now() -> str:
+            """
+            Get current date and time.
+            """
+            return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        toolkit = SQLDatabaseToolkit(db=db, llm=llm)
+        tools = toolkit.get_tools()
+
+        tools.append(get_datetime_now)
+        #tools.append(HumanInputStreamlit())
+        tools.append(plotly_tool)
+
         memory = MemorySaver()
         agent = create_react_agent(llm, tools, checkpointer=memory)
 
