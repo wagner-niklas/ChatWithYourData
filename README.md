@@ -1,11 +1,11 @@
-# 🤖 Chat with Your Database - Streamlit & Langgraph Integration
+### 🤖 Chat with Your Database - Streamlit & Langgraph Integration
 
 This project enables you to interact with a database via a conversational interface, using Streamlit for the frontend and Langgraph for managing dialogues and queries. 
 It showcases how to use a data assistant to query databases with natural language.
 
 
 
-## 📋 Setup
+### 📋 Setup
 
 1. Create your environment (e.g. via conda)
    `conda create -n test_env python=3.12`
@@ -24,4 +24,5 @@ It showcases how to use a data assistant to query databases with natural languag
 6. Run your data assistant
    `streamlit run app.py`
 
-
+### 🖥️ Screencast
+![](https://github.com/wagner-niklas/ChatWithYourData/blob/main/archive/Screencast.gif)
